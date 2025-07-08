@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HAZATS ADVENTURE</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f0f2f5; }
+    .navbar { background: #007bff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; color: white; }
+    .navbar .logo { font-size: 20px; font-weight: bold; }
+    .navbar ul { list-style: none; margin:0; padding:0; display:flex; }
+    .navbar ul li { margin-left:20px; }
+    .navbar ul li a { color:white; text-decoration:none; font-weight:500; cursor:pointer; }
+    .navbar ul li a:hover { text-decoration:underline; }
+
+    .form-container, .dashboard-container, .beranda-container {
+      max-width: 900px;
+      margin: 50px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2, h3 { text-align: center; margin-bottom: 25px; color: #333; }
+    label { display: block; margin-bottom: 8px; font-weight: bold; }
+    input[type=text], input[type=email], input[type=date], input[type=password], input[type=file], select {
+      width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box;
+    }
+    input[type=submit], button {
+      width: 100%; background: #007bff; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
+    }
+    input[type=submit]:hover, button:hover { background: #0056b3; }
+    .note { text-align: center; font-size: 0.9em; color: #555; margin-top: 15px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    table, th, td { border: 1px solid #ccc; }
+    th, td { padding: 8px; text-align: left; }
+    th { background: #007bff; color: white; }
+
+    @media(max-width:600px){ .form-container, .dashboard-container, .beranda-container { margin: 20px; padding: 15px; } }
+
+    #loginModal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); justify-content: center; align-items: center; }
+    #loginModal .modal-content { background: #fff; padding: 20px; border-radius: 10px; width: 300px; position: relative; }
+    #loginModal .close { position: absolute; top: 10px; right: 15px; font-size: 28px; font-weight: bold; cursor: pointer; }
+    #loginModal .close:hover { color: black; }
+
+    .beranda-container img { width: 100%; border-radius: 10px; margin-top: 20px; }
+    .hidden { display: none; }
+
+    /* Animasi */
+    .fade-in {
+      animation: fadeIn 0.5s ease forwards;
+    }
+    .fade-out {
+      animation: fadeOut 0.4s ease forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(10px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">HAZATS ADVENTURE</div>
+    <ul>
+      <li><a id="menuBeranda">Beranda</a></li>
+      <li><a id="menuPendaftaran">Pendaftaran</a></li>
+      <li><a>Tentang</a></li>
+      <li><a>Kontak</a></li>
+      <li><a id="loginBtn">Login</a></li>
+      <li><a id="logoutBtn" style="display:none;">Logout</a></li>
+    </ul>
+  </div>
+
+  <!-- Beranda -->
+  <div class="beranda-container" id="berandaSection">
+    <h2>Selamat Datang di HAZATS ADVENTURE</h2>
+    <p style="text-align:center;">Temukan petualangan terbaikmu bersama kami!</p>
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80" alt="Pemandangan" />
+    <h3>Daftar Trip Tersedia</h3>
+    <ul id="daftarTripBeranda" style="list-style:none;padding:0;"></ul>
+  </div>
+
+  <!-- Form Pendaftaran -->
+  <div class="form-container hidden" id="pendaftaranSection">
+    <h2>Form Pendaftaran Trip</h2>
+    <form id="pendaftaranForm" enctype="multipart/form-data">
+      <label>Destinasi Trip</label><input type="text" name="destinasi" required />
+      <label>Tanggal Keberangkatan</label><input type="date" name="tanggal" required />
+      <label>Nama Lengkap</label><input type="text" name="nama" required />
+      <label>Alamat</label><input type="text" name="alamat" required />
+      <label>Usia</label><input type="text" name="usia" required />
+      <label>Jenis Kelamin</label>
+      <div style="margin-bottom:30px;">
+        <label><input type="radio" name="gender" value="Laki-laki" required /> Laki-laki</label>
+        <label style="margin-left:30px;"><input type="radio" name="gender" value="Perempuan" required /> Perempuan</label>
+      </div>
+      <label>Riwayat Penyakit</label><input type="text" name="penyakit" />
+      <label>No WhatsApp</label><input type="text" name="whatsapp" required />
+      <label>Upload Bukti Transaksi</label><input type="file" name="buktiTransaksi" accept="image/*,.pdf" />
+      <label>Jumlah Uang Masuk (Rp)</label><input type="text" name="uang_masuk" required />
+      <input type="submit" value="Daftarkan" />
+    </form>
+    <div class="note">* Pastikan semua data diisi dengan benar.</div>
+  </div>
+
+  <!-- Dashboard Admin -->
+  <div class="dashboard-container hidden" id="dashboardSection">
+    <h2>Dashboard Admin</h2>
+    <button id="btnBackToForm" style="max-width:180px;margin-bottom:15px;">Kembali ke Form Pendaftaran</button>
+    <label>Filter Trip:</label><select id="filterTrip"><option value="all">Semua Trip</option></select>
+    <label>Cari:</label><input type="text" id="searchInput" placeholder="Cari peserta..." />
+    <p>Jumlah Peserta: <span id="totalPeserta">0</span></p>
+    <p>Total Uang Masuk: Rp <span id="totalUangMasuk">0</span></p>
+    <table>
+      <thead>
+        <tr><th>Destinasi</th><th>Tanggal</th><th>Nama</th><th>Alamat</th><th>Usia</th><th>Gender</th><th>Penyakit</th><th>WhatsApp</th><th>Bukti Transaksi</th><th>Uang</th><th>Aksi</th></tr>
+      </thead>
+      <tbody id="tablePesertaBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Modal Login -->
+  <div id="loginModal">
+    <div class="modal-content">
+      <span class="close" id="closeLogin">&times;</span>
+      <h3>Login Admin</h3>
+      <label>Email</label><input type="email" id="loginEmail" placeholder="admin@hazats.com" />
+      <label>Password</label><input type="password" id="loginPassword" placeholder="admin123" />
+      <button id="loginSubmit">Login</button>
+    </div>
+  </div>
+
+  <!-- Script -->
+  <script>
+    const loginModal = document.getElementById('loginModal'),
+          loginBtn = document.getElementById('loginBtn'),
+          closeLogin = document.getElementById('closeLogin'),
+          logoutBtn = document.getElementById('logoutBtn'),
+          pendaftaranSection = document.getElementById('pendaftaranSection'),
+          dashboardSection = document.getElementById('dashboardSection'),
+          berandaSection = document.getElementById('berandaSection'),
+          menuBeranda = document.getElementById('menuBeranda'),
+          menuPendaftaran = document.getElementById('menuPendaftaran'),
+          searchInput = document.getElementById('searchInput'),
+          filterTrip = document.getElementById('filterTrip'),
+          tablePesertaBody = document.getElementById('tablePesertaBody'),
+          totalPesertaElem = document.getElementById('totalPeserta'),
+          totalUangMasukElem = document.getElementById('totalUangMasuk'),
+          pForm = document.getElementById('pendaftaranForm'),
+          btnBackToForm = document.getElementById('btnBackToForm');
+
+    function getPeserta(){ return JSON.parse(localStorage.getItem('dataPeserta')||'[]'); }
+    function savePeserta(arr){ localStorage.setItem('dataPeserta',JSON.stringify(arr)); }
+
+    function showSection(section) {
+      const sections = [berandaSection, pendaftaranSection, dashboardSection];
+      sections.forEach(sec => {
+        if (sec === section) {
+          sec.classList.remove('hidden');
+          sec.classList.remove('fade-out');
+          sec.classList.add('fade-in');
+        } else if (!sec.classList.contains('hidden')) {
+          sec.classList.remove('fade-in');
+          sec.classList.add('fade-out');
+          setTimeout(() => {
+            sec.classList.add('hidden');
+            sec.classList.remove('fade-out');
+          }, 400);
+        }
+      });
+    }
+
+    menuBeranda.onclick = () => showSection(berandaSection);
+    menuPendaftaran.onclick = () => showSection(pendaftaranSection);
+
+    loginBtn.onclick = () => loginModal.style.display = 'flex';
+    closeLogin.onclick = () => loginModal.style.display = 'none';
+    window.onclick = e => { if (e.target === loginModal) loginModal.style.display = 'none'; };
+
+    document.getElementById('loginSubmit').onclick = () => {
+      if (loginEmail.value === 'admin@hazats.com' && loginPassword.value === 'admin123') {
+        alert('Login berhasil!');
+        loginModal.style.display = 'none';
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline';
+        showSection(dashboardSection);
+        updateFilterOptions();
+        renderDashboard();
+      } else alert('Email/password salah!');
+    };
+
+    logoutBtn.onclick = () => {
+      alert('Logout!');
+      logoutBtn.style.display = 'none';
+      loginBtn.style.display = 'inline';
+      showSection(berandaSection);
+    };
+
+    btnBackToForm.onclick = () => showSection(pendaftaranSection);
+    filterTrip.onchange = () => renderDashboard(filterTrip.value, searchInput.value);
+    searchInput.oninput = () => renderDashboard(filterTrip.value, searchInput.value);
+
+    pForm.onsubmit = e => {
+      e.preventDefault();
+      if (!/^\d+$/.test(pForm.usia.value)) return alert('Usia harus berupa angka!');
+      if (!/^\d{10,15}$/.test(pForm.whatsapp.value)) return alert('Nomor WhatsApp tidak valid!');
+      if (!/^\d+$/.test(pForm.uang_masuk.value)) return alert('Jumlah uang masuk harus angka!');
+      const f = new FileReader();
+      const fileInput = pForm.buktiTransaksi;
+      const peserta = {
+        destinasi: pForm.destinasi.value.trim(),
+        tanggal: pForm.tanggal.value,
+        nama: pForm.nama.value.trim(),
+        alamat: pForm.alamat.value.trim(),
+        usia: pForm.usia.value.trim(),
+        gender: pForm.gender.value,
+        penyakit: pForm.penyakit.value.trim(),
+        whatsapp: pForm.whatsapp.value.trim(),
+        buktiTransaksi: '',
+        uang_masuk: parseInt(pForm.uang_masuk.value) || 0
+      };
+      f.onload = () => {
+        peserta.buktiTransaksi = f.result;
+        const data = getPeserta(); data.push(peserta); savePeserta(data);
+        alert('Pendaftaran berhasil!');
+        pForm.reset(); updateFilterOptions();
+      };
+      if (fileInput.files[0]) f.readAsDataURL(fileInput.files[0]);
+      else {
+        const data = getPeserta(); data.push(peserta); savePeserta(data);
+        alert('Pendaftaran berhasil!'); pForm.reset(); updateFilterOptions();
+      }
+    };
+    tampilkanTripDiBeranda();
+
+    function renderDashboard(filter='all', keyword='') {
+      const data = getPeserta();
+      let filtered = filter === 'all' ? data : data.filter(p => p.destinasi === filter);
+      if (keyword.trim() !== '') {
+        const kw = keyword.toLowerCase();
+        filtered = filtered.filter(p => Object.values(p).some(val => val && val.toString().toLowerCase().includes(kw)));
+      }
+      tablePesertaBody.innerHTML = '';
+      totalPesertaElem.innerText = filtered.length;
+      const totalUang = filtered.reduce((a, p) => a + (parseInt(p.uang_masuk) || 0), 0);
+      totalUangMasukElem.innerText = totalUang.toLocaleString('id-ID');
+      if (filtered.length === 0) {
+        tablePesertaBody.innerHTML = '<tr><td colspan="11" style="text-align:center;">Tidak ada data.</td></tr>';
+        return;
+      }
+      filtered.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${p.destinasi}</td><td>${p.tanggal}</td><td>${p.nama}</td>
+          <td>${p.alamat}</td><td>${p.usia}</td><td>${p.gender}</td><td>${p.penyakit||'-'}</td><td>${p.whatsapp}</td>
+          <td>${p.buktiTransaksi?`<a href="#" class="viewBukti" data-index="${idx}">Lihat</a>`:'-'}</td>
+          <td>Rp ${parseInt(p.uang_masuk).toLocaleString('id-ID')}</td>
+          <td>
+            <button class="editBtn" data-index="${idx}">Edit</button>
+            <button class="deleteBtn" data-index="${idx}">Hapus</button>
+          </td>`;
+        tablePesertaBody.appendChild(tr);
+      });
+      document.querySelectorAll('.editBtn').forEach(btn => btn.onclick = e => editPeserta(+e.currentTarget.dataset.index, filter));
+      document.querySelectorAll('.deleteBtn').forEach(btn => btn.onclick = e => {
+        const i = +e.currentTarget.dataset.index;
+        if (confirm('Yakin ingin menghapus peserta ini?')) {
+          const data = getPeserta();
+          data.splice(i, 1);
+          savePeserta(data);
+          renderDashboard(filter, searchInput.value);
+          updateFilterOptions();
+        }
+      });
+      document.querySelectorAll('.viewBukti').forEach(a => a.onclick = e => {
+        e.preventDefault();
+        const p = getPeserta()[+e.currentTarget.dataset.index];
+        if (!p.buktiTransaksi) return alert('Tidak ada bukti.');
+        const modal = document.createElement('div');
+        Object.assign(modal.style, { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.6)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999 });
+        const img = document.createElement('img');
+        img.src = p.buktiTransaksi;
+        img.style.maxWidth = '80%'; img.style.maxHeight = '80%';
+        modal.appendChild(img); modal.onclick = () => modal.remove(); document.body.appendChild(modal);
+      });
+    }
+
+    function editPeserta(idx, filter) {
+      const arr = getPeserta(), p = arr[idx];
+      const fields = ['destinasi','tanggal','nama','alamat','usia','gender','penyakit','whatsapp','uang_masuk'];
+      fields.forEach(f => {
+        const val = prompt(`${f.charAt(0).toUpperCase() + f.slice(1)}:`, p[f]);
+        if (val !== null) p[f] = val;
+      });
+      savePeserta(arr);
+      renderDashboard(filter, searchInput.value);
+    }
+
+    function updateFilterOptions(){
+      const all = getPeserta(), setDest = [...new Set(all.map(p => p.destinasi))];
+      filterTrip.innerHTML = '<option value="all">Semua Trip</option>';
+      setDest.forEach(dest => {
+        const o = document.createElement('option');
+        o.value = dest;
+        o.textContent = dest;
+        filterTrip.appendChild(o);
+      });
+    }
+
+    function tampilkanTripDiBeranda() {
+  const data = getPeserta();
+  const daftar = document.getElementById('daftarTripBeranda');
+  const unikTrip = [...new Set(data.map(p => `${p.destinasi}|${p.tanggal}`))]; // Kombinasi unik
+  daftar.innerHTML = '';
+
+  if (unikTrip.length === 0) {
+    daftar.innerHTML = '<li style="text-align:center;color:gray;">Belum ada trip yang tersedia.</li>';
+    return;
+  }
+
+  unikTrip.forEach(item => {
+    const [destinasi, tanggal] = item.split('|');
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <div style="padding:10px;border:1px solid #ccc;border-radius:8px;margin-bottom:10px;background:#f9f9f9;">
+        <strong>${destinasi}</strong><br/>
+        <small>Tanggal: ${tanggal}</small>
+      </div>`;
+    daftar.appendChild(li);
+  });
+}
+
+    // Set default view
+    showSection(berandaSection);
+  </script>
+</body>
+</html>
